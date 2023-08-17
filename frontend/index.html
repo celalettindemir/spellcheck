@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TextCorrection2</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" >
+
+            <form>
+                <textarea id="content">
+            
+                    </textarea>
+            </form>
+            <p id="result">
+            
+            </p>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - TextCorrection2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="assets/lib/jquery/dist/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        //var deleteCoverLeterConfirmation = function () {
+        //    page.currentCoverLetterId.val($(this).attr('data-cover-letter-id'));
+        //    page.warningModal.modal();
+        //};
+        var delay = (function () {
+            var timer = 0;
+            return function (callback, ms) {
+                clearTimeout(timer);
+                timer = setTimeout(callback, ms);                    
+            };
+        })();
+        
+        var controlText = async function () {
+            const text = $('#content').val();
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:8080/spellCheck',
+                data: `{"text":"${text}"}`,
+                success: function (data) { $("p").html(data); },
+                contentType: "application/json"
+            });
+        };
+        $(document).ready(function () {
+            $('#content').keyup(function () {
+                delay(function () {
+                    controlText();
+                }, 1000)
+            });
+            //$('#content').bind('change', controlText);
+            $('#content').val("");
+        });
+    </script>
+</body>
+</html>
